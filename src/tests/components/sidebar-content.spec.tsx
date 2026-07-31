@@ -1,14 +1,57 @@
 import { SidebarContent } from '@/components/sidebar/sidebar-content'
 import { render, screen } from '@/lib/test-utils'
+import userEvent from '@testing-library/user-event'
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: jest.fn() }),
 }))
 
+function renderElement() {
+  render(<SidebarContent />)
+}
+
 describe('SidebarContent', () => {
+  const user = userEvent.setup()
+
   it('Should render new prompt button', () => {
-    render(<SidebarContent />)
+    renderElement()
 
     expect(screen.getByRole('button', { name: 'Novo prompt' })).toBeVisible()
+  })
+
+  describe('Collapse / Expand', () => {
+    it('Should start in expanded mode and display the minimize button', () => {
+      renderElement()
+
+      const aside = screen.getByRole('complementary')
+      expect(aside).toBeVisible()
+
+      const collapseButton = screen.getByRole('button', {
+        name: /minimizar sidebar/i,
+      })
+      expect(collapseButton).toBeVisible()
+
+      const expandButton = screen.queryByRole('button', {
+        name: /expandir sidebar/i,
+      })
+      expect(expandButton).not.toBeInTheDocument()
+    })
+
+    it('Should minimize and display the expand button', async () => {
+      renderElement()
+
+      const collapseButton = screen.getByRole('button', {
+        name: /minimizar sidebar/i,
+      })
+
+      await user.click(collapseButton)
+
+      const expandButton = screen.queryByRole('button', {
+        name: /expandir sidebar/i,
+      })
+      expect(expandButton).toBeVisible()
+
+      expect(collapseButton).not.toBeInTheDocument()
+    })
   })
 })
