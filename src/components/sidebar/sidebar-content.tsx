@@ -12,7 +12,17 @@ import { Logo } from '../logo'
 import { Button } from '../ui/button'
 import clsx from 'clsx'
 
-export function SidebarContent() {
+interface Prompt {
+  id: string
+  title: string
+  content: string
+}
+
+export interface SidebarContentProps {
+  prompts: Prompt[]
+}
+
+export function SidebarContent({ prompts }: SidebarContentProps) {
   const router = useRouter()
   const [isCollapsed, setIsCollapsed] = useState(false)
 
@@ -83,6 +93,10 @@ export function SidebarContent() {
           </section>
         </>
       )}
+
+      {prompts.map((prompt) => (
+        <p key={prompt.id}>{prompt.title}</p>
+      ))}
     </aside>
   )
 }

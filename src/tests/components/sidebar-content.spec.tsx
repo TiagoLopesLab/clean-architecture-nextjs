@@ -1,23 +1,62 @@
-import { SidebarContent } from '@/components/sidebar/sidebar-content'
+import {
+  SidebarContent,
+  type SidebarContentProps,
+} from '@/components/sidebar/sidebar-content'
 import { render, screen } from '@/lib/test-utils'
 import userEvent from '@testing-library/user-event'
+
+const initialProps: SidebarContentProps = {
+  prompts: [
+    {
+      id: '1',
+      title: 'Example 1',
+      content: 'Content 1',
+    },
+  ],
+}
 
 const pushMock = jest.fn()
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: pushMock }),
 }))
 
-function renderElement() {
-  render(<SidebarContent />)
+function renderElement({ prompts }: SidebarContentProps = initialProps) {
+  render(<SidebarContent prompts={prompts} />)
 }
 
 describe('SidebarContent', () => {
   const user = userEvent.setup()
 
-  it('Should render new prompt button', () => {
-    renderElement()
+  describe('Base', () => {
+    it('Should render new prompt button', () => {
+      renderElement()
 
-    expect(screen.getByRole('button', { name: 'Novo prompt' })).toBeVisible()
+      expect(screen.getByRole('button', { name: 'Novo prompt' })).toBeVisible()
+    })
+
+    it('Should render prompt list', () => {
+      const props: SidebarContentProps = {
+        prompts: [
+          {
+            id: '1',
+            title: 'Example 1',
+            content: 'Content 1',
+          },
+          {
+            id: '2',
+            title: 'Example 2',
+            content: 'Content 2',
+          },
+        ],
+      }
+
+      renderElement(props)
+
+      expect(screen.getAllByRole('paragraph')).toHaveLength(
+        props.prompts.length
+      )
+      expect(screen.getByText(props.prompts[0].title)).toBeInTheDocument()
+    })
   })
 
   describe('Collapse / Expand', () => {
