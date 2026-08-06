@@ -11,6 +11,7 @@ import { useState } from 'react'
 import { Logo } from '../logo'
 import { Button } from '../ui/button'
 import clsx from 'clsx'
+import { Input } from '../ui/input'
 
 interface Prompt {
   id: string
@@ -83,6 +84,17 @@ export function SidebarContent({ prompts }: SidebarContentProps) {
                 </Button>
               </header>
             </div>
+
+            <section className="mb-5">
+              <form>
+                <Input
+                  name="q"
+                  type="text"
+                  placeholder="Buscar prompts..."
+                  autoFocus
+                />
+              </form>
+            </section>
 
             <div>
               <Button onClick={handleNewPrompt} className="w-full" size="lg">

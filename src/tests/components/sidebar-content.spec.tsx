@@ -57,6 +57,16 @@ describe('SidebarContent', () => {
       )
       expect(screen.getByText(props.prompts[0].title)).toBeInTheDocument()
     })
+
+    it('Should update the search field as you typed', async () => {
+      renderElement()
+      const text = 'text'
+      const searchInput = screen.getByPlaceholderText('Buscar prompts...')
+
+      await user.type(searchInput, text)
+
+      expect(searchInput).toHaveValue(text)
+    })
   })
 
   describe('Collapse / Expand', () => {
